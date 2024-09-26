@@ -2,7 +2,7 @@ import {signIn, signOut} from "next-auth/react"
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import DiscordIcon from "@/components/discord"
-import {LoaderCircle, LogOut, Plus} from "lucide-react"
+import {CodeXml, LoaderCircle, LogOut, Plus} from "lucide-react"
 import {GetServerSideProps} from "next"
 import {getServerSession} from "next-auth"
 import {authOptions} from "@/pages/api/auth/[...nextauth]"
@@ -14,6 +14,8 @@ import {useCallback, useState} from "react"
 import QrScanner from "qr-scanner"
 import {toast} from "sonner"
 import {useRouter} from "next/router"
+import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hover-card"
+import {Typography} from "@/components/typography"
 
 type Props = {
     username: string | null
@@ -58,8 +60,11 @@ export default function Home({username, uid, accounts}: Props) {
 function SignIn() {
     return (
         <div className="flex h-dvh items-center justify-center bg-zinc-100 px-2">
-            <Card className="w-full max-w-md">
+            <Card className="w-full max-w-md relative">
                 <CardHeader>
+                    <div className="absolute right-6">
+                        <Sources side="top"/>
+                    </div>
                     <CardTitle>Welcome</CardTitle>
                     <CardDescription>Login or register with Discord.</CardDescription>
                 </CardHeader>
@@ -83,7 +88,8 @@ function Page({username, uid, accounts}: {
 
     return (
         <div className="flex flex-col h-dvh bg-zinc-100">
-            <nav className="container mx-auto px-4 py-2 flex justify-end">
+            <nav className="container mx-auto px-4 py-2 flex justify-end gap-x-1">
+                <Sources/>
                 <Button variant="ghost" className="hover:bg-zinc-200 dark:hover:bg-zinc-800"
                         onClick={() => signOut()}>
                     <LogOut className="mr-2 h-4 w-4"/>
@@ -108,7 +114,7 @@ function Page({username, uid, accounts}: {
                         <div className="border border-zinc-200 rounded-md shadow-sm bg-zinc-50 divide-y divide-zinc-200 overflow-clip">
                             {!!accounts.length ? (<>
                                 {accounts.map(account => (<>
-                                    <div key={account.code + account.host} className="flex items-center">
+                                    <div key={account.code + ":" + account.host} className="flex items-center">
                                         {!!account.customer_logo && (
                                             <img className="w-16 h-16 border-r border-zinc-200 mr-4" src={`data:image/jpeg;base64,${account.customer_logo}`} alt="Logo"/>
                                         )}
@@ -281,4 +287,33 @@ function AddDialog({uid}: {
             </DialogContent>
         </Dialog>
     </>)
+}
+
+function Sources({side}: {
+    side?: "top" | "right" | "bottom" | "left"
+}) {
+    const [open, setOpen] = useState<undefined | boolean>(undefined)
+    return (
+        <HoverCard openDelay={200} closeDelay={200} open={open}>
+            <HoverCardTrigger>
+                <Button variant="ghost" className="px-3 hover:bg-zinc-200 dark:hover:bg-zinc-800"
+                        onClick={() => {
+                            if (window.matchMedia("(pointer: coarse)").matches) {
+                                setOpen(!!open ? undefined : true)
+                            }
+                        }}>
+                    <CodeXml className="h-4 w-4"/>
+                </Button>
+            </HoverCardTrigger>
+            <HoverCardContent side={side}>
+                <Typography variant="large">Sources</Typography>
+                <Typography variant="small" className="!mt-2">
+                    Frontend available at <a className="underline" href="https://github.com/shedaniel/autoduo-web/">github.com</a>.
+                </Typography>
+                <Typography variant="small" className="!mt-2">
+                    Backend available at <a className="underline" href="https://github.com/shedaniel/autoduo-backend/">github.com</a>.
+                </Typography>
+            </HoverCardContent>
+        </HoverCard>
+    )
 }
