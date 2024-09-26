@@ -57,7 +57,7 @@ export default function Home({username, uid, accounts}: Props) {
 
 function SignIn() {
     return (
-        <div className="flex h-screen items-center justify-center bg-zinc-100">
+        <div className="flex h-dvh items-center justify-center bg-zinc-100 px-2">
             <Card className="w-full max-w-md">
                 <CardHeader>
                     <CardTitle>Welcome</CardTitle>
@@ -82,7 +82,7 @@ function Page({username, uid, accounts}: {
     const router = useRouter()
 
     return (
-        <div className="flex flex-col h-screen bg-zinc-100">
+        <div className="flex flex-col h-dvh bg-zinc-100">
             <nav className="container mx-auto px-4 py-2 flex justify-end">
                 <Button variant="ghost" className="hover:bg-zinc-200 dark:hover:bg-zinc-800"
                         onClick={() => signOut()}>
@@ -90,7 +90,7 @@ function Page({username, uid, accounts}: {
                     Logout of {username}
                 </Button>
             </nav>
-            <div className="flex-1 flex flex-col items-center justify-center pb-20">
+            <div className="flex-1 flex flex-col items-center justify-center pb-20 px-2">
                 <Card className="w-full max-w-md">
                     <CardHeader>
                         <CardTitle className="flex items-center justify-between">
