@@ -10,7 +10,7 @@ import {getActiveAccounts} from "@/api/data/autoduo"
 import Account from "@/types/autoduo"
 import {Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog"
 import {useDropzone} from "react-dropzone"
-import {useCallback, useRef, useState} from "react"
+import {useCallback, useState} from "react"
 import QrScanner from "qr-scanner"
 import {toast} from "sonner"
 import {useRouter} from "next/router"
@@ -155,23 +155,9 @@ function AddDialog({uid}: {
 }) {
     const [step, setStep] = useState<"warning" | "scan" | "upload" | "error" | "success">("warning")
     const [error, setError] = useState("")
-    const dialogRef = useRef<HTMLDivElement>(null)
-
-    function updateDialogHeight() {
-        const dialog = dialogRef.current
-        if (!dialog) return
-        dialog.style.height = dialog.offsetHeight + "px"
-        console.log(dialog.offsetHeight)
-        setTimeout(() => {
-            dialog.style.height = "auto"
-            console.log(dialog.offsetHeight)
-            dialog.style.height = dialog.offsetHeight + "px"
-        }, 0)
-    }
 
     const changeStep = useCallback((newStep: typeof step) => {
         setStep(newStep)
-        updateDialogHeight()
     }, [])
 
     const scan = useCallback((file: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | ImageBitmap | SVGImageElement | File | Blob | URL | String) => {
@@ -221,9 +207,6 @@ function AddDialog({uid}: {
             if (open) {
                 changeStep("warning")
                 setError("")
-                setTimeout(() => {
-                    updateDialogHeight()
-                })
             } else {
                 router.replace(router.asPath)
             }
@@ -234,7 +217,7 @@ function AddDialog({uid}: {
                     <Plus className="w-4 h-4 ml-2 stroke-[3]"/>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="!transition-[height] !overflow-y-hidden" ref={dialogRef} style={{height: 0}}>
+            <DialogContent>
                 <DialogHeader>
                     {step === "warning" ? (<>
                         <DialogTitle>Disclaimer</DialogTitle>
